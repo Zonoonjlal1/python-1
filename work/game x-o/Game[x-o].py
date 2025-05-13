@@ -30,11 +30,23 @@ class Game:
     def play_game(self):
         while True:
             self.play_turn()
-            if self.check_win() or self.check_draw():
+            if self.check_win():
                 choice = self.menu.display_endgame_menu()
-                if choice == "1":
+                if choice == 1:
                     self.reset_game()
                     break
+                else:
+                    return
+            elif self.check_draw():
+                print("\n🤝 It's a draw! No winner this time.\n")
+                choice = self.menu.display_endgame_menu()
+                if choice == 1:
+                    self.reset_game()
+                    break
+                else:
+                    return
+            else:
+                self.switch_player()
 
     def quit_game(self):
         print("Thanks for playing!")
@@ -52,7 +64,7 @@ class Game:
                     print("Invalid choice. Please choose a number between 1 and 9.")
             except ValueError:
                 print("Invalid input. Please enter a number 1 and 9.")
-        self.switch_player()
+
 
     def switch_player(self):
         self.current_player_index = 1 - self.current_player_index
@@ -60,11 +72,26 @@ class Game:
     def reset_game(self):
         self.board.reset_board()
         self.current_player_index = 0
+        self.play_game()
+
     def check_win(self):
+        win_combinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],  # Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],  # Columns
+            [0, 4, 8], [2, 4, 6]  # Diagonals
+        ]
+        for combo in win_combinations:
+            a, b, c = combo
+            if self.board.board[a] == self.board.board[b] == self.board.board[c]:
+                winner = self.players[self.current_player_index]
+                print(f"\n🎉 {winner.name} wins the game with symbol '{winner.symbol}'! 🎉\n")
+                self.board.display_board()
+                return True
         return False
 
     def check_draw(self):
-        return False
+        return all(not cell.isdigit() for cell in self.board.board) and not self.check_win()
+    print("It's a draw!")
 
 game = Game()
 game.start_game()

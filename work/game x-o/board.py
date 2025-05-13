@@ -7,13 +7,13 @@ class Board:
             if i<6:
                 print("-"*5)
     def update_board(self,choice,symbol):
-        if self.is_valid_move(choice):
+        if self.is_valid_move(choice) :
             self.board[choice-1] = symbol
             return True
         else:
             return False
     def is_valid_move(self,choice):
-        return self.board[choice-1].isdigit
+        return self.board[choice-1].isdigit()
     def reset_board(self):
         self.board = [str(i) for i in range(1, 10)]
 
